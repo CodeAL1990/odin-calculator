@@ -1,0 +1,14 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.grid-container #zero {
+  grid-column-start: 1;
+  grid-column-end: 5;
+}
+
+.grid-container #display {
+  grid-column-start: 1;
+  grid-column-end: 5;
+}
