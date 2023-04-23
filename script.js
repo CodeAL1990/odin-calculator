@@ -15,29 +15,69 @@ const eightBtn = document.querySelector("#eight");
 const nineBtn = document.querySelector("#nine");
 const equalBtn = document.querySelector("#equal");
 const zeroBtn = document.querySelector("#zero");
-const display = document.querySelector("#display");
+const displayTotal = document.querySelector("#displayTotal");
+const displaySequence = document.querySelector("displaySequence");
 
 clearBtn.addEventListener("click", () => {
-  display.textContent = "";
+  total = null;
+  displayTotal.textContent = "";
+  state = "waiting";
 });
 
+let state = "waiting";
+let total = null;
+
 addBtn.addEventListener("click", () => {
-  display.textContent += " + ";
+  if (state === "waitingForNextNumber") {
+    const currentValue = parseInt(displayTotal.textContent);
+    if (total === null) {
+      total = currentValue;
+    } else {
+      total += currentValue;
+    }
+    displayTotal.textContent = total;
+    state = "waiting";
+  }
+});
+
+subtractBtn.addEventListener("click", () => {
+  if (state === "waitingForNextNumber") {
+    const currentValue = parseInt(displayTotal.textContent);
+    if (total === null) {
+      total = currentValue;
+    } else {
+      total = `${total}` - currentValue;
+    }
+    displayTotal.textContent = total;
+    state = "waiting";
+  }
 });
 
 oneBtn.addEventListener("click", () => {
-  display.textContent += "1";
+  if (state === "waiting") {
+    displayTotal.textContent = "1";
+    state = "waitingForNextNumber";
+  } else if (state === "waitingForNextNumber") {
+    displayTotal.textContent += "1";
+  }
 });
 
-twoBtn.addEventListener("click", () => {
-  display.textContent += "2";
-});
+/* twoBtn.addEventListener("click", () => {
+  if (state === "waiting") {
+    displayTotal.textContent = "2";
+    state = "waitingForNextNumber";
+  } else if (state === "waitingForNextNumber") {
+    displayTotal.textContent += "2";
+  }
+}); */
 
 threeBtn.addEventListener("click", () => {
-  display.textContent += "3";
+  displayTotal.textContent += "3";
 });
 
-function operate() {}
+function operate(operation) {
+  if (operation === "addBtn") return add;
+}
 
 function add(a, b) {
   return a + b;
