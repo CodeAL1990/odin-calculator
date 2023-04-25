@@ -1,7 +1,7 @@
 const calculator = {
   displayValue: "0",
   firstOperand: null,
-  waitingForSecondOperand: false,
+  waitingForNextOperand: false,
   operator: null,
 };
 
@@ -37,10 +37,10 @@ keys.addEventListener("click", (event) => {
       clear();
       break;
     default:
-      //Check for integer
-      if (Number.isInteger(parseFloat(value))) {
+      /* if (Number.isInteger(parseFloat(value))) {
         inputDigit(value);
-      }
+      } */
+      inputDigit(value);
   }
 
   updateDisplay();
@@ -68,10 +68,11 @@ keys.addEventListener("click", (event) => {
 });
 
 function inputDigit(digit) {
-  const { displayValue, waitingForSecondOperand } = calculator;
-  if (waitingForSecondOperand === true) {
+  const { displayValue, waitingForNextOperand } = calculator;
+
+  if (waitingForNextOperand === true) {
     calculator.displayValue = digit;
-    calculator.waitingForSecondOperand = false;
+    calculator.waitingForNextOperand = false;
   } else {
     calculator.displayValue =
       displayValue === "0" ? digit : displayValue + digit;
@@ -81,9 +82,9 @@ function inputDigit(digit) {
 }
 
 function inputDecimal(dot) {
-  if (calculator.waitingForSecondOperand === true) {
+  if (calculator.waitingForNextOperand === true) {
     calculator.displayValue = "0.";
-    calculator.waitingForSecondOperand = false;
+    calculator.waitingForNextOperand = false;
     return;
   }
   if (!calculator.displayValue.includes(dot)) {
@@ -96,23 +97,24 @@ function handleOperator(nextOperator) {
   const inputValue = parseFloat(displayValue);
 
   //Checks if operator already exist
-  if (operator && calculator.waitingForSecondOperand) {
+  if (operator && calculator.waitingForNextOperand) {
     calculator.operator = nextOperator;
     console.log(calculator);
     return;
   }
 
-  //isNaN(value) method checks for number or not
+  //Check if firstOperand is null and the input is a number
   if (firstOperand === null && !isNaN(inputValue)) {
     calculator.firstOperand = inputValue;
   } else if (operator) {
     const result = operate(firstOperand, inputValue, operator);
 
-    calculator.displayValue = `${parseFloat(result.toFixed(5))}`;
+    //String(result) can be `${parseFloat(result.toFixed(n))}` to avoid floating point math that computers use
+    calculator.displayValue = String(result);
     calculator.firstOperand = result;
   }
 
-  calculator.waitingForSecondOperand = true;
+  calculator.waitingForNextOperand = true;
   calculator.operator = nextOperator;
   console.log(calculator);
 }
@@ -128,17 +130,17 @@ function operate(firstOperand, secondOperand, operator) {
     return firstOperand / secondOperand;
   }
 
+  //if operator is "=" return as it is
   return secondOperand;
 }
 
 function clear() {
   calculator.displayValue = "0";
   calculator.firstOperand = null;
-  calculator.waitingForSecondOperand = false;
+  calculator.waitingForNextOperand = false;
   calculator.operator = null;
   console.log(calculator);
 }
-
 /* clearBtn.addEventListener("click", () => {
   total = null;
   displayTotal.textContent = "";
@@ -195,19 +197,3 @@ oneBtn.addEventListener("click", () => {
     displayTotal.textContent += "2";
   }
 }); */
-
-function add(a, b) {
-  return a + b;
-}
-
-function subtract(a, b) {
-  return a - b;
-}
-
-function multiply(a, b) {
-  return a * b;
-}
-
-function divide(a, b) {
-  return a / b;
-}
