@@ -36,6 +36,9 @@ keys.addEventListener("click", (event) => {
     case "clear":
       clear();
       break;
+    case "backspace":
+      backspace();
+      break;
     default:
       /* if (Number.isInteger(parseFloat(value))) {
         inputDigit(value);
@@ -134,6 +137,22 @@ function operate(firstOperand, secondOperand, operator) {
   return secondOperand;
 }
 
+function backspace() {
+  const { waitingForNextOperand, displayValue } = calculator;
+  if (waitingForNextOperand === true) {
+    calculator.operator = null;
+    calculator.waitingForNextOperand = false;
+    calculator.firstOperand = null;
+  }
+
+  if (calculator.displayValue !== null) {
+    calculator.displayValue = displayValue.substring(
+      0,
+      displayValue.length - 1
+    );
+  }
+}
+
 function clear() {
   calculator.displayValue = "0";
   calculator.firstOperand = null;
@@ -141,6 +160,8 @@ function clear() {
   calculator.operator = null;
   console.log(calculator);
 }
+
+//Previous failed attempt
 /* clearBtn.addEventListener("click", () => {
   total = null;
   displayTotal.textContent = "";

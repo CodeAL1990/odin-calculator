@@ -32,4 +32,8 @@ Add a condition at handleOperator to allow user to change operators on their nex
 Add clear function to restore calculator to default state on clear button click
 Add a condition to inputDecimal so that the decimal after an operator appears as a secondOperand by explicitly putting the default value of 0 in front of the decimal
 Refactor keys event listener to a switch statement and a destructured target property of event so that it only needs to call updateDisplay once at the end
-//TODO --> backspace button, css styling
+Added backspace function to delete the latest inputted digit
+Add a condition to backspace to reset operator, waitingForNextOperand and firstOperand to default when waitingForNextOperand is true so that it removes the digit correctly along with its operator
+Center calculator using absolute position and translate properties
+Add button styling for hover and active to create click effect
+//TODO -->css styling
