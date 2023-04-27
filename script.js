@@ -22,6 +22,7 @@ keys.addEventListener("click", (event) => {
     return;
   }
 
+  //Refactored
   switch (value) {
     case "+":
     case "-":
@@ -30,7 +31,7 @@ keys.addEventListener("click", (event) => {
     case "=":
       handleOperator(value);
       break;
-    case ".":
+    case "decimal":
       inputDecimal(value);
       break;
     case "clear":
@@ -41,13 +42,14 @@ keys.addEventListener("click", (event) => {
       break;
     default:
       /* if (Number.isInteger(parseFloat(value))) {
-        inputDigit(value);
-      } */
+          inputDigit(value);
+        } */
       inputDigit(value);
   }
 
   updateDisplay();
 
+  //Before refactor
   /* if (target.classList.contains("operator")) {
     handleOperator(target.value);
     updateDisplay();
@@ -57,6 +59,11 @@ keys.addEventListener("click", (event) => {
   if (target.classList.contains("decimal")) {
     inputDecimal(target.value);
     updateDisplay();
+    return;
+  }
+
+  if (target.classList.contains("backspace")) {
+    console.log("backspace", target.value);
     return;
   }
 
@@ -85,18 +92,20 @@ function inputDigit(digit) {
 }
 
 function inputDecimal(dot) {
-  if (calculator.waitingForNextOperand === true) {
+  const { waitingForNextOperand, displayValue } = calculator;
+
+  if (waitingForNextOperand === true) {
     calculator.displayValue = "0.";
     calculator.waitingForNextOperand = false;
     return;
   }
-  if (!calculator.displayValue.includes(dot)) {
+  if (!displayValue.includes(dot)) {
     calculator.displayValue += dot;
   }
 }
 
 function handleOperator(nextOperator) {
-  const { firstOperand, displayValue, operator } = calculator;
+  const { displayValue, firstOperand, operator } = calculator;
   const inputValue = parseFloat(displayValue);
 
   //Checks if operator already exist
@@ -137,22 +146,6 @@ function operate(firstOperand, secondOperand, operator) {
   return secondOperand;
 }
 
-function backspace() {
-  const { waitingForNextOperand, displayValue } = calculator;
-  if (waitingForNextOperand === true) {
-    calculator.operator = null;
-    calculator.waitingForNextOperand = false;
-    calculator.firstOperand = null;
-  }
-
-  if (calculator.displayValue !== null) {
-    calculator.displayValue = displayValue.substring(
-      0,
-      displayValue.length - 1
-    );
-  }
-}
-
 function clear() {
   calculator.displayValue = "0";
   calculator.firstOperand = null;
@@ -161,60 +154,77 @@ function clear() {
   console.log(calculator);
 }
 
+function backspace() {
+  const { displayValue, waitingForNextOperand } = calculator;
+
+  if (waitingForNextOperand === true) {
+    calculator.operator = null;
+    calculator.firstOperand = null;
+    calculator.waitingForNextOperand = false;
+  }
+
+  if (displayValue !== null) {
+    calculator.displayValue = displayValue.substring(
+      0,
+      displayValue.length - 1
+    );
+  }
+}
+
 //Previous failed attempt
 /* clearBtn.addEventListener("click", () => {
-  total = null;
-  displayTotal.textContent = "";
-  state = "waiting";
-});
-
-let state = "waiting";
-let total = null;
-let operator = null;
-
-addBtn.addEventListener("click", () => {
-  if (state === "waitingForNextNumber") {
-    operator = "+";
-    const currentValue = parseInt(displayTotal.textContent);
-    if (total === null) {
-      total = currentValue;
-    } else {
-      total += currentValue;
-    }
-    displayTotal.textContent = total;
+    total = null;
+    displayTotal.textContent = "";
     state = "waiting";
-  }
-});
-
-subtractBtn.addEventListener("click", () => {
-  if (state === "waitingForNextNumber") {
-    const currentValue = parseInt(displayTotal.textContent);
-    if (total === null) {
-      total = currentValue;
-    } else {
-      total = total - currentValue;
+  });
+  
+  let state = "waiting";
+  let total = null;
+  let operator = null;
+  
+  addBtn.addEventListener("click", () => {
+    if (state === "waitingForNextNumber") {
+      operator = "+";
+      const currentValue = parseInt(displayTotal.textContent);
+      if (total === null) {
+        total = currentValue;
+      } else {
+        total += currentValue;
+      }
+      displayTotal.textContent = total;
+      state = "waiting";
     }
-    displayTotal.textContent = total;
-    operator = "-";
-    state = "waiting";
-  }
-});
-
-oneBtn.addEventListener("click", () => {
-  if (state === "waiting") {
-    displayTotal.textContent = "1";
-    state = "waitingForNextNumber";
-  } else {
-    displayTotal.textContent += "1";
-    state = "waitingForNextNumber";
-  }
-}); */
+  });
+  
+  subtractBtn.addEventListener("click", () => {
+    if (state === "waitingForNextNumber") {
+      const currentValue = parseInt(displayTotal.textContent);
+      if (total === null) {
+        total = currentValue;
+      } else {
+        total = total - currentValue;
+      }
+      displayTotal.textContent = total;
+      operator = "-";
+      state = "waiting";
+    }
+  });
+  
+  oneBtn.addEventListener("click", () => {
+    if (state === "waiting") {
+      displayTotal.textContent = "1";
+      state = "waitingForNextNumber";
+    } else {
+      displayTotal.textContent += "1";
+      state = "waitingForNextNumber";
+    }
+  }); */
 
 /* twoBtn.addEventListener("click", () => {
-  if (state === "waiting") {
-    displayTotal.textContent = "2";
-    state = "waitingForNextNumber";
-  } else if (state === "waitingForNextNumber") {
-    displayTotal.textContent += "2";
-  }
-}); */
+    if (state === "waiting") {
+      displayTotal.textContent = "2";
+      state = "waitingForNextNumber";
+    } else if (state === "waitingForNextNumber") {
+      displayTotal.textContent += "2";
+    }
+  }); */
